@@ -23,6 +23,8 @@ func main() {
 	router.GET("/albums", getAlbums)
 	router.GET("/albums/:id", getAlbumByID)
 	router.POST("/albums", createAlbum)
+	router.DELETE("/albums/:id", deleteAlbumByID)
+	router.PATCH("/albums/:id", updateAlbumByID)
 
 	router.Run("localhost:8000")
 }
@@ -49,4 +51,34 @@ func getAlbumByID(c *gin.Context) {
 		}
 	}
 	c.IndentedJSON(http.StatusNotFound, gin.H{"info": "Album not found"})
+}
+
+func deleteAlbumByID(c *gin.Context) {
+	id := c.Param("id")
+	for i, a := range albums {
+		if id == a.ID {
+			albums = deleteAlbum(i, albums)
+			c.AbortWithStatus(http.StatusNoContent)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"info": "Album not found"})
+}
+
+func updateAlbumByID(c *gin.Context) {
+	id := c.Param("id")
+	var updatedAlbum album
+	if err := c.BindJSON(&updatedAlbum); err != nil {
+		return
+	}
+	var albumIndex int
+	for i, a := range albums {
+		if id == a.ID {
+			albumIndex = i
+			break
+		}
+	}
+	albums[albumIndex].Title = updatedAlbum.Title
+	albums[albumIndex].Price = updatedAlbum.Price
+	c.IndentedJSON(http.StatusOK, albums[albumIndex])
 }

@@ -1,0 +1,32 @@
+POST http://localhost:8000/albums
+Content-Type: application/json
+
+{
+  "title": "The Modern Sound of Betty Carter",
+  "artist": "Betty Carter",
+  "price": 11.11
+}
+
+###
+
+POST http://localhost:8000/albums
+Content-Type: application/json
+
+{
+  "title": "Blue Train",
+  "artist": "John Coltrane",
+  "price": 22.22
+}
+
+###
+
+POST http://localhost:8000/albums
+Content-Type: application/json
+
+{
+  "title": "Jeru",
+  "artist": "Gerry Mulligan",
+  "price": 33.33
+}
+
+###

@@ -6,10 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func main() {
+func SetUpRouter() *gin.Engine {
 	router := gin.Default()
-
-	models.ConnectDatabase()
 
 	router.GET("/albums", controllers.FindAlbums)
 	router.GET("/albums/:id", controllers.FindAlbumById)
@@ -17,5 +15,11 @@ func main() {
 	router.PATCH("/albums/:id", controllers.UpdateAlbum)
 	router.DELETE("/albums/:id", controllers.DeleteAlbum)
 
+	return router
+}
+
+func main() {
+	router := SetUpRouter()
+	models.ConnectDatabase()
 	router.Run("localhost:8000")
 }

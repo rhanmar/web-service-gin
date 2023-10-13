@@ -1,0 +1,21 @@
+PATCH localhost:8000/albums/1
+Content-Type: application/json
+
+{
+  "title": "The Modern Sound of Betty Carter",
+  "artist": "Not Betty Carter!",
+  "price": 1100.0011
+}
+
+###
+
+PATCH localhost:8000/albums/100000
+Content-Type: application/json
+
+{
+  "title": "The Modern Sound of Betty Carter",
+  "artist": "Betty Carter",
+  "price": 11.11
+}
+
+###

@@ -12,7 +12,10 @@ func main() {
 	models.ConnectDatabase()
 
 	router.GET("/albums", controllers.FindAlbums)
+	router.GET("/albums/:id", controllers.FindAlbumById)
 	router.POST("/albums", controllers.CreateAlbum)
+	router.PATCH("/albums/:id", controllers.UpdateAlbum)
+	router.DELETE("/albums/:id", controllers.DeleteAlbum)
 
 	router.Run("localhost:8000")
 }

@@ -1,0 +1,4 @@
+DELETE localhost:8000/albums/6
+Content-Type: application/json
+
+###

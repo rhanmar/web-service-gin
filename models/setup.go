@@ -15,3 +15,16 @@ func ConnectDatabase() {
 	database.AutoMigrate(&Album{})
 	DB = database
 }
+
+func ConnectTestDatabase() {
+	database, err := gorm.Open(sqlite.Open("my_test_db.db"), &gorm.Config{})
+	if err != nil {
+		panic("Failed to connect to database!")
+	}
+	database.AutoMigrate(&Album{})
+	DB = database
+}
+
+func ClearTestDatabase() {
+	DB.Where("id > 0").Delete(&Album{})
+}

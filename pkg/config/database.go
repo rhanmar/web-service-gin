@@ -1,6 +1,7 @@
-package models
+package config
 
 import (
+	"example/web-service-gin/pkg/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -12,7 +13,7 @@ func ConnectDatabase() {
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
-	database.AutoMigrate(&Album{})
+	database.AutoMigrate(&models.Album{})
 	DB = database
 }
 
@@ -21,10 +22,10 @@ func ConnectTestDatabase() {
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
-	database.AutoMigrate(&Album{})
+	database.AutoMigrate(&models.Album{})
 	DB = database
 }
 
 func ClearTestDatabase() {
-	DB.Where("id > 0").Delete(&Album{})
+	DB.Where("id > 0").Delete(&models.Album{})
 }

@@ -3,7 +3,8 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"example/web-service-gin/models"
+	"example/web-service-gin/pkg/config"
+	"example/web-service-gin/pkg/models"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http"
@@ -13,7 +14,7 @@ import (
 
 func TestFindAlbums(t *testing.T) {
 	router := SetUpRouter()
-	models.ConnectTestDatabase()
+	config.ConnectTestDatabase()
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/albums", nil)
@@ -24,12 +25,12 @@ func TestFindAlbums(t *testing.T) {
 	responseBody, _ := ioutil.ReadAll(w.Body)
 	assert.Equal(t, mockResponse, string(responseBody))
 
-	models.ClearTestDatabase()
+	config.ClearTestDatabase()
 }
 
 func TestCreateAlbum(t *testing.T) {
 	router := SetUpRouter()
-	models.ConnectTestDatabase()
+	config.ConnectTestDatabase()
 
 	w := httptest.NewRecorder()
 	newAlbum := models.Album{
@@ -49,5 +50,5 @@ func TestCreateAlbum(t *testing.T) {
 	_, ok := dat["data"]
 	assert.Equal(t, true, ok)
 
-	models.ClearTestDatabase()
+	config.ClearTestDatabase()
 }

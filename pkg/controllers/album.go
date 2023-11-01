@@ -1,25 +1,15 @@
 package controllers
 
 import (
-	"example/web-service-gin/models"
+	"example/web-service-gin/pkg/config"
+	"example/web-service-gin/pkg/models"
+	"example/web-service-gin/pkg/schemas"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-type CreateAlbumInput struct {
-	Title  string  `json:"title" binding:"required"`
-	Artist string  `json:"artist" binding:"required"`
-	Price  float64 `json:"price" binding:"required"`
-}
-
-type UpdateAlbumInput struct {
-	Title  string  `json:"title"`
-	Artist string  `json:"artist"`
-	Price  float64 `json:"price"`
-}
-
 func CreateAlbum(c *gin.Context) {
-	var input CreateAlbumInput
+	var input schemas.CreateAlbumInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -29,19 +19,19 @@ func CreateAlbum(c *gin.Context) {
 		Artist: input.Artist,
 		Price:  input.Price,
 	}
-	models.DB.Create(&album)
+	config.DB.Create(&album)
 	c.JSON(http.StatusCreated, gin.H{"data": album, "created": true})
 }
 
 func FindAlbums(c *gin.Context) {
 	var albums []models.Album
-	models.DB.Find(&albums)
+	config.DB.Find(&albums)
 	c.JSON(http.StatusOK, gin.H{"data": albums})
 }
 
 func FindAlbumById(c *gin.Context) {
 	var album models.Album
-	if err := models.DB.Where("id = ?", c.Param("id")).First(&album).Error; err != nil {
+	if err := config.DB.Where("id = ?", c.Param("id")).First(&album).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
@@ -51,12 +41,12 @@ func FindAlbumById(c *gin.Context) {
 
 func UpdateAlbum(c *gin.Context) {
 	var album models.Album
-	if err := models.DB.Where("id = ?", c.Param("id")).First(&album).Error; err != nil {
+	if err := config.DB.Where("id = ?", c.Param("id")).First(&album).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
-	var input UpdateAlbumInput
+	var input schemas.UpdateAlbumInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -68,17 +58,17 @@ func UpdateAlbum(c *gin.Context) {
 		Price:  input.Price,
 	}
 
-	models.DB.Model(&album).Updates(&updatedAlbum)
+	config.DB.Model(&album).Updates(&updatedAlbum)
 	c.JSON(http.StatusOK, gin.H{"data": album})
 }
 
 func DeleteAlbum(c *gin.Context) {
 	var album models.Album
-	if err := models.DB.Where("id = ?", c.Param("id")).First(&album).Error; err != nil {
+	if err := config.DB.Where("id = ?", c.Param("id")).First(&album).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
-	models.DB.Delete(&album)
+	config.DB.Delete(&album)
 	c.JSON(http.StatusNoContent, gin.H{"deleted": true})
 }

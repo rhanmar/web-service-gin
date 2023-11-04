@@ -29,7 +29,7 @@ func connectPostgres() (db *gorm.DB, err error) {
 func ConnectDatabase() {
 	//database, _ := connectSqlite()
 	database, _ := connectPostgres()
-	database.AutoMigrate(&models.Album{})
+	//database.AutoMigrate(&models.Album{})
 	DB = database
 }
 

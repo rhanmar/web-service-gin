@@ -8,28 +8,30 @@ import (
 
 type AlbumRepository struct{}
 
-func (repo AlbumRepository) CreateAlbum(input schemas.CreateAlbumInput) (models.Album, error) {
-	album := models.Album{
-		Title:  input.Title,
-		Artist: input.Artist,
-		Price:  input.Price,
+func (repo AlbumRepository) CreateAlbum(input schemas.CreateAlbumInput) (int64, error) {
+	result, err := config.DB.Exec(
+		"INSERT INTO albums (title, artist, price) VALUES ($1, $2, $3) RETURNING id",
+		input.Title,
+		input.Artist,
+		input.Price,
+	)
+	if err != nil {
+		return -1, err
 	}
-	config.DB.Create(&album)
-	return album, nil
+	id, err := result.LastInsertId()
+	return id, err
 }
 
 func (repo AlbumRepository) GetAll() ([]models.Album, error) {
 	var albums []models.Album
-	config.DB.Find(&albums)
-	return albums, nil
+	err := config.DB.Select(&albums, "SELECT * FROM albums")
+	return albums, err
 }
 
 func (repo AlbumRepository) GetByID(id string) (models.Album, error) {
 	var album models.Album
-	if err := config.DB.Where("id = ?", id).First(&album).Error; err != nil {
-		return album, err
-	}
-	return album, nil
+	err := config.DB.Get(&album, "SELECT * FROM albums WHERE id =  $1", id)
+	return album, err
 }
 
 func (repo AlbumRepository) Update(id string, input schemas.UpdateAlbumInput) (models.Album, error) {
@@ -37,23 +39,21 @@ func (repo AlbumRepository) Update(id string, input schemas.UpdateAlbumInput) (m
 	if err != nil {
 		return album, err
 	}
-
-	updatedAlbum := models.Album{
-		Title:  input.Title,
-		Artist: input.Artist,
-		Price:  input.Price,
-	}
-
-	config.DB.Model(&album).Updates(&updatedAlbum)
-	return album, nil
+	_, err = config.DB.Exec(
+		"UPDATE albums SET title=$1, artist=$2, price=$3 WHERE id = $4",
+		input.Title,
+		input.Artist,
+		input.Price,
+		id,
+	)
+	return album, err
 }
 
 func (repo AlbumRepository) DeleteByID(id string) error {
-	album, err := repo.GetByID(id)
+	_, err := repo.GetByID(id)
 	if err != nil {
 		return err
 	}
-
-	config.DB.Delete(&album)
-	return nil
+	_, err = config.DB.Exec("DELETE FROM albums WHERE id = $1", id)
+	return err
 }

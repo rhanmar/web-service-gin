@@ -3,6 +3,7 @@ package main
 import (
 	"example/web-service-gin/pkg/config"
 	"example/web-service-gin/pkg/controllers"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,6 +21,11 @@ func SetUpRouter() *gin.Engine {
 
 func main() {
 	router := SetUpRouter()
-	config.ConnectDatabase()
+	db, err := config.ConnectDatabase()
+	if err != nil {
+		fmt.Println(err)
+	}
 	router.Run("localhost:8000")
+
+	defer db.Close()
 }

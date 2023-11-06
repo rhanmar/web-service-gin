@@ -8,7 +8,7 @@ import (
 
 type AlbumService struct{}
 
-func (s AlbumService) CreateAlbum(input schemas.CreateAlbumInput) (models.Album, error) {
+func (s AlbumService) CreateAlbum(input schemas.CreateAlbumInput) (int64, error) {
 	repo := repositories.AlbumRepository{}
 	return repo.CreateAlbum(input)
 }

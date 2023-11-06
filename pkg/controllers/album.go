@@ -15,13 +15,13 @@ func CreateAlbum(c *gin.Context) {
 	}
 
 	s := services.AlbumService{}
-	album, err := s.CreateAlbum(input)
+	albumID, err := s.CreateAlbum(input)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"data": album, "created": true})
+	c.JSON(http.StatusCreated, gin.H{"id": albumID, "created": true})
 }
 
 func GetAllAlbums(c *gin.Context) {
